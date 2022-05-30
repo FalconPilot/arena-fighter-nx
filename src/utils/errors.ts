@@ -1,16 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import { APIError } from 'types'
+import { APIError, SerializedAPIError } from 'types'
 
 export const errorResponse = <T>(
-  res: NextApiResponse<T | APIError>,
+  res: NextApiResponse<T | SerializedAPIError>,
   err: APIError,
 ): void => {
-  return res.status(err.httpStatus).json(err)
+  return res.status(err.httpStatus).json(err.serialize())
 }
 
 export const errorHandler = <T>(
-  res: NextApiResponse<T | APIError>,
+  res: NextApiResponse<T | SerializedAPIError>,
 ) => (err: any): void => {
   console.error(err)
   if (err instanceof APIError) {
@@ -29,7 +29,7 @@ export const errorHandler = <T>(
 
 export const forbiddenMethod = <T>(
   req: NextApiRequest,
-  res: NextApiResponse<T | APIError>,
+  res: NextApiResponse<T | SerializedAPIError>,
 ): void => {
   return errorResponse(res, new APIError(405, `${req.method ?? 'Method'} is not allowed`))
 }

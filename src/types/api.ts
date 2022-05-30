@@ -1,4 +1,7 @@
 import { AxiosRequestConfig } from 'axios'
+import { NextApiHandler } from 'next'
+
+import { SerializedAPIError } from './error'
 
 export type ValidQSParam = boolean | string | string[] | number | number[]
 
@@ -25,3 +28,5 @@ export interface ApiHandler<RequestResponse> {
     params?: ApiHandlerParams<RequestResponse>
   ) => Promise<RequestResponse>,
 }
+
+export type APIHandler<T = void> = NextApiHandler<T | SerializedAPIError>

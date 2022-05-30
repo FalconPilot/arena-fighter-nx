@@ -7,9 +7,11 @@ import { Auth } from 'components/auth'
 import { Loading } from 'components/loading'
 
 import { MainView } from './view'
+import { useUser } from 'contexts'
 
 export const Main: React.FunctionComponent = () => {
   const [state, setState] = useLoadingState<number>()
+  const user = useUser()
 
   React.useEffect(() => {
     checkSession()

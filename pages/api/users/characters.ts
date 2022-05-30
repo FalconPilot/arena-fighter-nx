@@ -1,11 +1,9 @@
-import { NextApiHandler } from 'next'
-
 import { prisma } from 'prisma'
-import { APIError, Character, extractCharacter } from 'types'
+import { APIHandler, Character, extractCharacter } from 'types'
 import { errorHandler, forbiddenMethod } from 'utils/errors'
 import { getSessionUser, withSessionRoute } from 'utils/session'
 
-const handleLogin: NextApiHandler<Character[] | APIError> = async (req, res) => {
+const handleLogin: APIHandler<Character[]> = async (req, res) => {
   return getSessionUser(req, res)
     .then(user => prisma.character.findMany({
       where: {
@@ -19,7 +17,7 @@ const handleLogin: NextApiHandler<Character[] | APIError> = async (req, res) => 
     .catch(errorHandler(res))
 }
 
-const handler: NextApiHandler<Character[] | APIError> = (req, res) => {
+const handler: APIHandler<Character[]> = (req, res) => {
   switch (req.method) {
     case 'POST':
       return withSessionRoute(handleLogin)(req, res)

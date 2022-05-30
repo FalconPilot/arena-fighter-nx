@@ -22,6 +22,7 @@
     "paths": {
       "api/*": ["./src/api/*"],
       "components/*": ["./src/components/*"],
+      "contexts": ["./src/contexts"],
       "gamedata/*": ["./src/gamedata/*"],
       "hooks": ["./src/hooks"],
       "prisma": ["./prisma/client.ts"],

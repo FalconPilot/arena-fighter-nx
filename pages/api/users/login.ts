@@ -1,12 +1,10 @@
-import { NextApiHandler } from 'next'
-
 import { prisma } from 'prisma'
-import { APIError, extractUser, LoginPayloadCodec, User } from 'types'
+import { APIError, APIHandler, extractUser, LoginPayloadCodec, User } from 'types'
 import { errorHandler, forbiddenMethod } from 'utils/errors'
 import { compare } from 'utils/password'
 import { withSessionRoute } from 'utils/session'
 
-const handleLogin: NextApiHandler<User | APIError> = async (req, res) => {
+const handleLogin: APIHandler<User> = async (req, res) => {
   return Promise.resolve(req.body)
     .then(LoginPayloadCodec.parse)
     .then(({ password, email }) => Promise.all([
@@ -40,7 +38,7 @@ const handleLogin: NextApiHandler<User | APIError> = async (req, res) => {
     .catch(errorHandler(res))
 }
 
-const handler: NextApiHandler<User | APIError> = (req, res) => {
+const handler: APIHandler<User> = (req, res) => {
   switch (req.method) {
     case 'POST':
       return withSessionRoute(handleLogin)(req, res)
