@@ -3,7 +3,6 @@ import { User as DBUser } from '@prisma/client'
 
 export const UserCodec = z.object({
   id: z.number().int(),
-  createdAt: z.date(),
   name: z.string(),
   email: z.string().email(),
 })
@@ -23,7 +22,6 @@ export type UserPayload = z.TypeOf<typeof UserPayloadCodec>
 
 export const extractUser = (src: DBUser): User => ({
   id: src.id,
-  createdAt: src.createdAt,
   name: src.name,
   email: src.email,
 })

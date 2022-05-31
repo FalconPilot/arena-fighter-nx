@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { useTranslations } from 'hooks'
+import { useTranslations } from 'contexts'
 
 import { CommonProps, LoginForm } from './types'
 import { AuthContainer, AuthField, Form } from './styled'

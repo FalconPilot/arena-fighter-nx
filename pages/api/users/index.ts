@@ -1,5 +1,5 @@
 import { prisma } from 'prisma'
-import { APIHandler, SerializedAPIError, User, UserPayloadCodec } from 'types'
+import { APIHandler, User, UserPayloadCodec } from 'types'
 import { errorHandler, forbiddenMethod } from 'utils/errors'
 import { encrypt } from 'utils/password'
 import { getSessionUser, withSessionRoute } from 'utils/session'
@@ -18,7 +18,7 @@ const handlePost: APIHandler<User> = async (req, res) => {
 }
 
 const handleGet: APIHandler<User> = async (req, res) => {
-  return getSessionUser(req, res)
+  return getSessionUser(req)
     .then(user => {
       return res.status(200).send(user)
     })
@@ -28,7 +28,7 @@ const handleGet: APIHandler<User> = async (req, res) => {
 const handler: APIHandler<User> = (req, res) => {
   switch (req.method) {
     case 'GET':
-      return withSessionRoute(handleGet)(req, res)
+      return handleGet(req, res)
     case 'POST':
       return handlePost(req, res)
     default:
@@ -36,4 +36,4 @@ const handler: APIHandler<User> = (req, res) => {
   }
 }
 
-export default handler
+export default withSessionRoute(handler)

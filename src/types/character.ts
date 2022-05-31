@@ -1,54 +1,37 @@
 import { z } from 'zod'
-import { Character as DBCharacter } from '@prisma/client'
-
-// export const UserCodec = z.object({
-//   id: z.number().int(),
-//   createdAt: z.date(),
-//   name: z.string(),
-//   email: z.string().email(),
-// })
-
-// export type User = z.TypeOf<typeof UserCodec>
-
-// export const UserPayloadCodec = z.object({
-//   name: z.string(),
-//   email: z.string().email(),
-//   password: z.string().min(8),
-//   passwordCheck: z.string(),
-// })
-//   .refine(user => user.password === user.passwordCheck)
-//   .transform(({ passwordCheck, ...user }) => ({ ...user }))
-
-// export type UserPayload = z.TypeOf<typeof UserPayloadCodec>
-
-// export const extractUser = (src: DBUser): User => ({
-//   id: src.id,
-//   createdAt: src.createdAt,
-//   name: src.name,
-//   email: src.email,
-// })
-
-// export const LoginPayloadCodec = z.object({
-//   email: z.string().email(),
-//   password: z.string(),
-// })
-
-// export type LoginPayload = z.TypeOf<typeof LoginPayloadCodec>
+import {
+  Character as DBCharacter,
+  Weapon as DBWeapon,
+} from '@prisma/client'
+import { WeaponCodec } from './weapon'
 
 export const CharacterCodec = z.object({
   id: z.number().int(),
-  createdAt: z.date(),
+  firstName: z.string(),
+  lastName: z.string(),
+  stageName: z.nullable(z.string()),
+  weapon: z.nullable(WeaponCodec),
+  secondaryWeapon: z.nullable(WeaponCodec),
+})
+
+export type Character = z.TypeOf<typeof CharacterCodec>
+
+export const extractCharacter = (src: DBCharacter & {
+  weapon: DBWeapon | null,
+  secondaryWeapon: DBWeapon | null,
+}): Character => ({
+  id: src.id,
+  firstName: src.firstName,
+  lastName: src.lastName,
+  stageName: src.stageName,
+  weapon: src.weapon,
+  secondaryWeapon: src.secondaryWeapon,
+})
+
+export const CharacterPayloadCodec = z.object({
   firstName: z.string(),
   lastName: z.string(),
   stageName: z.nullable(z.string()),
 })
 
-export type Character = z.TypeOf<typeof CharacterCodec>
-
-export const extractCharacter = (src: DBCharacter): Character => ({
-  id: src.id,
-  createdAt: src.createdAt,
-  firstName: src.firstName,
-  lastName: src.lastName,
-  stageName: src.stageName,
-})
+export type CharacterPayload = z.TypeOf<typeof CharacterPayloadCodec>

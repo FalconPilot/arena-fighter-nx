@@ -41,10 +41,10 @@ const handleLogin: APIHandler<User> = async (req, res) => {
 const handler: APIHandler<User> = (req, res) => {
   switch (req.method) {
     case 'POST':
-      return withSessionRoute(handleLogin)(req, res)
+      return handleLogin(req, res)
     default:
       return forbiddenMethod(req, res)
   }
 }
 
-export default handler
+export default withSessionRoute(handler)

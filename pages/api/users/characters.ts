@@ -3,11 +3,13 @@ import { APIHandler, Character, extractCharacter } from 'types'
 import { errorHandler, forbiddenMethod } from 'utils/errors'
 import { getSessionUser, withSessionRoute } from 'utils/session'
 
-const handleLogin: APIHandler<Character[]> = async (req, res) => {
-  return getSessionUser(req, res)
+const handleGet: APIHandler<Character[]> = async (req, res) => {
+  return getSessionUser(req)
     .then(user => prisma.character.findMany({
-      where: {
-        userId: user.id
+      where: { userId: user.id },
+      include: {
+        weapon: true,
+        secondaryWeapon: true,
       }
     }))
     .then(results => results.map(extractCharacter))
@@ -19,11 +21,11 @@ const handleLogin: APIHandler<Character[]> = async (req, res) => {
 
 const handler: APIHandler<Character[]> = (req, res) => {
   switch (req.method) {
-    case 'POST':
-      return withSessionRoute(handleLogin)(req, res)
+    case 'GET':
+      return handleGet(req, res)
     default:
       return forbiddenMethod(req, res)
   }
 }
 
-export default handler
+export default withSessionRoute(handler)

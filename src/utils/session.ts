@@ -30,7 +30,6 @@ export const withSessionRoute = <T>(handler: NextApiHandler<T>) => {
 
 export const getSessionUser = async <T>(
   req: NextApiRequest,
-  res: NextApiResponse<T | APIError>,
 ): Promise<User> => {
   const userId = req.session.user?.id
 

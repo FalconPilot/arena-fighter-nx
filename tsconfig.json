@@ -26,12 +26,14 @@
       "gamedata/*": ["./src/gamedata/*"],
       "hooks": ["./src/hooks"],
       "prisma": ["./prisma/client.ts"],
+      "styles/*": ["./styles/*"],
       "types": ["./src/types"],
       "utils/*": ["./src/utils/*"],
     }
   },
   "include": [
-    "next-env.d.ts",
+    "./next-env.d.ts",
+    "./constants.ts",
     "./**/*.ts",
     "./**/*.tsx"
   ],

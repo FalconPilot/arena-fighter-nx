@@ -11,12 +11,15 @@ generator client {
 model User {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
+  characters Character[]
   email String @unique
   password String
   name String @unique
   validated Boolean @default(false)
   validationToken String?
-  characters Character[]
+  lastCheckout DateTime?
+
+  // Inventory
   weapons Int[]
   layers Int[]
   items Int[]
@@ -36,33 +39,36 @@ model Character {
 
   // Weapons
   weapon Weapon? @relation(name: "mainWeapon", fields: [weaponId], references: [id])
-  weaponId Int
+  weaponId Int?
   secondaryWeapon Weapon? @relation(name: "secondaryWeapon", fields: [secondaryWeaponId], references: [id])
-  secondaryWeaponId Int
+  secondaryWeaponId Int?
 
   // Torso layers
-  topTorsoLayer ArmorLayer @relation(name: "topTorsoLayer", fields: [topTorsoLayerId], references: [id])
-  topTorsoLayerId Int
-  middleTorsoLayer ArmorLayer @relation(name: "middleTorsoLayer", fields: [middleTorsoLayerId], references: [id])
-  middleTorsoLayerId Int
-  lowTorsoLayer ArmorLayer @relation(name: "lowTorsoLayer", fields: [lowTorsoLayerId], references: [id])
-  lowTorsoLayerId Int
+  torsoArmorName String?
+  topTorsoLayer ArmorLayer? @relation(name: "topTorsoLayer", fields: [topTorsoLayerId], references: [id])
+  topTorsoLayerId Int?
+  middleTorsoLayer ArmorLayer? @relation(name: "middleTorsoLayer", fields: [middleTorsoLayerId], references: [id])
+  middleTorsoLayerId Int?
+  lowTorsoLayer ArmorLayer? @relation(name: "lowTorsoLayer", fields: [lowTorsoLayerId], references: [id])
+  lowTorsoLayerId Int?
 
   // Head layers
-  topHeadLayer ArmorLayer @relation(name: "topHeadLayer", fields: [topHeadLayerId], references: [id])
-  topHeadLayerId Int
-  middleHeadLayer ArmorLayer @relation(name: "middleHeadLayer", fields: [middleHeadLayerId], references: [id])
-  middleHeadLayerId Int
-  lowHeadLayer ArmorLayer @relation(name: "lowHeadLayer", fields: [lowHeadLayerId], references: [id])
-  lowHeadLayerId Int
+  headArmorName String?
+  topHeadLayer ArmorLayer? @relation(name: "topHeadLayer", fields: [topHeadLayerId], references: [id])
+  topHeadLayerId Int?
+  middleHeadLayer ArmorLayer? @relation(name: "middleHeadLayer", fields: [middleHeadLayerId], references: [id])
+  middleHeadLayerId Int?
+  lowHeadLayer ArmorLayer? @relation(name: "lowHeadLayer", fields: [lowHeadLayerId], references: [id])
+  lowHeadLayerId Int?
 
   // Legs layers
-  topLegsLayer ArmorLayer @relation(name: "topLegsLayer", fields: [topLegsLayerId], references: [id])
-  topLegsLayerId Int
-  middleLegsLayer ArmorLayer @relation(name: "middleLegsLayer", fields: [middleLegsLayerId], references: [id])
-  middleLegsLayerId Int
-  lowLegsLayer ArmorLayer @relation(name: "lowLegsLayer", fields: [lowLegsLayerId], references: [id])
-  lowLegsLayerId Int
+  legArmorName String?
+  topLegsLayer ArmorLayer? @relation(name: "topLegsLayer", fields: [topLegsLayerId], references: [id])
+  topLegsLayerId Int?
+  middleLegsLayer ArmorLayer? @relation(name: "middleLegsLayer", fields: [middleLegsLayerId], references: [id])
+  middleLegsLayerId Int?
+  lowLegsLayer ArmorLayer? @relation(name: "lowLegsLayer", fields: [lowLegsLayerId], references: [id])
+  lowLegsLayerId Int?
 }
 
 // Weapon-related models
@@ -93,12 +99,15 @@ enum WeaponMaterialType {
 model Weapon {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
+  nameKey String
   charactersWithPrimary Character[] @relation(name: "mainWeapon")
   charactersWithSecondary Character[] @relation(name: "secondaryWeapon")
   category WeaponType
   size WeaponSize
   material WeaponMaterialType
   range Int
+
+  // Damages
   slashDamage Int
   bluntDamage Int
   pierceDamage Int
@@ -132,8 +141,11 @@ enum LayerMaterialType {
 model ArmorLayerMaterial {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
+  nameKey String
   layers ArmorLayer[]
-  type LayerMaterialType
+  materialType LayerMaterialType
+
+  // Defenses
   slashResistance Int
   bluntResistance Int
   pierceResistance Int
@@ -146,6 +158,7 @@ model ArmorLayerMaterial {
 model ArmorLayer {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
+  nameKey String
   level LayerLevel
   material ArmorLayerMaterial @relation(fields: [materialId], references: [id])
   materialId Int

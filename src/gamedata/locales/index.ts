@@ -12,6 +12,10 @@ export const translations = {
     en: 'Log in',
     fr: 'Se connecter'
   },
+  logout: {
+    en: 'Logout',
+    fr: 'Se déconnecter',
+  },
   loading: {
     en: 'Loading',
     fr: 'Chargement'
@@ -31,5 +35,25 @@ export const translations = {
   username: {
     en: 'Username',
     fr: 'Pseudonyme',
+  },
+  tooShort: {
+    en: 'Too short',
+    fr: 'Trop court',
+  },
+  firstName: {
+    en: 'First name',
+    fr: 'Prénom',
+  },
+  lastName: {
+    en: 'Last name',
+    fr: 'Nom de famille',
+  },
+  stageName: {
+    en: 'Stage name',
+    fr: 'Surnom',
+  },
+  close: {
+    en: 'Close',
+    fr: 'Fermer',
   },
 } as const

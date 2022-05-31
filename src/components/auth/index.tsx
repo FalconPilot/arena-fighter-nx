@@ -2,6 +2,7 @@ import * as React from 'react'
 
 import { useForm } from 'react-ux-form'
 
+import { useUser } from 'contexts'
 import { API } from 'utils/api'
 import { UserCodec } from 'types'
 
@@ -11,6 +12,7 @@ import { LoginView } from './loginView'
 import { SignupView } from './signupView'
 
 export const Auth: React.FunctionComponent = () => {
+  const [user, loadUser] = useUser()
   const [currentForm, setCurrentForm] = React.useState<CurrentForm>('login')
 
   const switchForm = (formKey: CurrentForm) => (): void => {
@@ -21,6 +23,30 @@ export const Auth: React.FunctionComponent = () => {
     switchForm,
   }
 
+  // Login
+  const loginForm: LoginForm = useForm({
+    email: {
+      initialValue: ''
+    },
+    password: {
+      initialValue: ''
+    }
+  })
+
+  const submitLoginForm: React.FormEventHandler<HTMLFormElement> = React.useCallback(evt => {
+    evt.preventDefault()
+    loginForm.submitForm(values => {
+      if (values.email) {
+        API.post(`/api/users/login`, UserCodec)
+          .withBody(values)
+          .execute()
+          .then(loadUser)
+          .catch(console.error)
+      }
+    }, console.error)
+  }, [loginForm, loadUser])
+
+  // Signup
   const signupForm: SignupForm = useForm({
     name: {
       initialValue: ''
@@ -36,44 +62,16 @@ export const Auth: React.FunctionComponent = () => {
     }
   })
 
-  const loginForm: LoginForm = useForm({
-    email: {
-      initialValue: ''
-    },
-    password: {
-      initialValue: ''
-    }
-  })
-
-  // Login
-  const submitLoginForm: React.FormEventHandler<HTMLFormElement> = React.useCallback(evt => {
-    evt.preventDefault()
-    loginForm.submitForm(values => {
-      if (values.email) {
-        API.post(`/api/users/login`, UserCodec)
-          .withBody(values)
-          .execute()
-          .then(console.log)
-          .catch(console.error)
-      }
-    }, err => {
-      console.error(err)
-    })
-  }, [loginForm])
-
-  // Signup
   const submitSignupForm: React.FormEventHandler<HTMLFormElement> = React.useCallback(evt => {
     evt.preventDefault()
     signupForm.submitForm(values => {
       API.post('/api/users', UserCodec)
         .withBody(values)
         .execute()
-        .then(console.log)
+        .then(loadUser)
         .catch(console.error)
-    }, err => {
-      console.error(err)
-    })
-  }, [signupForm])
+    }, console.error)
+  }, [signupForm, loadUser])
 
   return {
     ['login']: (
