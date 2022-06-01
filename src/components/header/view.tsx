@@ -32,7 +32,7 @@ export const HeaderView: React.FC<{
   canLogout,
   logout,
 }) => {
-  const [t, switchLanguage] = useTranslations()
+  const [{ t }, switchLanguage] = useTranslations()
 
   return (
     <HeaderContainer>

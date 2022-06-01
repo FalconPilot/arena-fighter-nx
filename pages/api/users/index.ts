@@ -1,12 +1,12 @@
 import { prisma } from 'prisma'
-import { APIHandler, User, UserPayloadCodec } from 'types'
+import { APIHandler, User, UserPayloadSchema } from 'types'
 import { errorHandler, forbiddenMethod } from 'utils/errors'
 import { encrypt } from 'utils/password'
 import { getSessionUser, withSessionRoute } from 'utils/session'
 
 const handlePost: APIHandler<User> = async (req, res) => {
   return Promise.resolve(req.body)
-    .then(UserPayloadCodec.parse)
+    .then(UserPayloadSchema.parse)
     .then(data => Promise.all([
       data,
       encrypt(data.password),

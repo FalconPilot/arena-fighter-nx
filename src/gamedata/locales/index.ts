@@ -1,3 +1,6 @@
+import { materialLocales } from './materials'
+import { weaponLocales } from './weapons'
+
 export const locales = {
   fr: 'Français',
   en: 'English',
@@ -56,4 +59,10 @@ export const translations = {
     en: 'Close',
     fr: 'Fermer',
   },
+  material: {
+    en: 'Material',
+    fr: 'Matériau',
+  },
+  ...materialLocales,
+  ...weaponLocales,
 } as const

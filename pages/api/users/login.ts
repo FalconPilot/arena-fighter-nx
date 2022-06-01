@@ -1,12 +1,12 @@
 import { prisma } from 'prisma'
-import { APIError, APIHandler, extractUser, LoginPayloadCodec, User } from 'types'
+import { APIError, APIHandler, extractUser, LoginPayloadSchema, User } from 'types'
 import { errorHandler, forbiddenMethod } from 'utils/errors'
 import { compare } from 'utils/password'
 import { withSessionRoute } from 'utils/session'
 
 const handleLogin: APIHandler<User> = async (req, res) => {
   return Promise.resolve(req.body)
-    .then(LoginPayloadCodec.parse)
+    .then(LoginPayloadSchema.parse)
     .then(({ password, email }) => Promise.all([
       password,
       prisma.user.findUnique({

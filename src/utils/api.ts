@@ -1,18 +1,18 @@
-import { z } from 'zod'
 import * as qs from 'query-string'
 import axios, { AxiosRequestConfig } from 'axios'
+import { z } from 'zod'
 
 import { ApiHandlerParams, ApiHandler } from '../types'
 
 // API Handler
 const apiHandler =
   (config: AxiosRequestConfig) =>
-  <T>(
+  <Output, Def, Input>(
       url: string,
-      codec: z.Schema<T>,
-    ): ApiHandler<T> =>
+      schema: z.Schema<Output, Def, Input>,
+    ): ApiHandler<Output> =>
       ({
-        withOptions: options => apiHandler({ ...config, ...options })(url, codec),
+        withOptions: options => apiHandler({ ...config, ...options })(url, schema),
         withHeaders: headers =>
           apiHandler({
             ...config,
@@ -20,15 +20,15 @@ const apiHandler =
               ...config.headers,
               ...headers
             }
-          })(url, codec),
-        withBody: body => apiHandler({ ...config, data: body })(url, codec),
+          })(url, schema),
+        withBody: body => apiHandler({ ...config, data: body })(url, schema),
         withQS: params =>
           apiHandler({
             ...config,
             params,
             paramsSerializer: p => qs.stringify(p, { skipEmptyString: true })
-          })(url, codec),
-        execute: (handlerParams?: ApiHandlerParams<T>) =>
+          })(url, schema),
+        execute: (handlerParams?: ApiHandlerParams<Output>) =>
         axios
           .request<unknown>({ ...config, url })
           .then(res => {
@@ -38,7 +38,7 @@ const apiHandler =
             return res
           })
           .then(res => res.data)
-          .then(codec.parse)
+          .then(schema.parse)
       } as const)
 
 // API methods

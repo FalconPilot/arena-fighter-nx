@@ -4,16 +4,13 @@ import { styled } from '@stitches/react'
 
 import { Header } from 'components/header'
 import { Main } from 'components/main'
-import { Loading } from 'components/loading'
-import { Auth } from 'components/auth'
 import { globalStyles } from 'styles/globals'
-import { hasResult } from 'types'
 
 import {
   CharactersProvider,
   LocaleProvider,
+  OverlaysProvider,
   UserProvider,
-  useUser,
 } from 'contexts'
 
 const AppContainer = styled('div', {
@@ -29,7 +26,9 @@ const Providers: React.FC<{
     <LocaleProvider>
       <UserProvider>
         <CharactersProvider>
-          {children}
+          <OverlaysProvider>
+            {children}
+          </OverlaysProvider>
         </CharactersProvider>
       </UserProvider>
     </LocaleProvider>
@@ -38,7 +37,6 @@ const Providers: React.FC<{
 
 const MainComponent: React.FC = () => {
   globalStyles()
-  const [user] = useUser()
 
   // This trick is used to disable SSR for the core app
   const [canRender, setRender] = React.useState<boolean>(false)
@@ -46,19 +44,10 @@ const MainComponent: React.FC = () => {
     setRender(true)
   }, [])
 
-  const isLogged = React.useMemo(() => (
-    hasResult(user)
-  ), [user])
-
   return !canRender ? null : (
     <AppContainer>
       <Header />
-      <Loading isLoading={user.isLoading}>
-        {isLogged
-          ? <Main />
-          : <Auth />
-        }
-      </Loading>
+      <Main />
     </AppContainer>
   )
 }

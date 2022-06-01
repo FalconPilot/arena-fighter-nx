@@ -1,6 +1,6 @@
 import { API } from 'utils/api'
-import { UserCodec } from 'types'
+import { UserSchema } from 'types'
 
 export const checkSession = () =>
-  API.get('/api/users', UserCodec)
+  API.get('/api/users', UserSchema)
     .execute()

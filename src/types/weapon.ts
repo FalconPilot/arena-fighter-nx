@@ -1,10 +1,16 @@
 import { z } from 'zod'
-import { Weapon as DBWeapon } from '@prisma/client'
 
-export const WeaponCodec = z.object({
+import {
+  Weapon as DBWeapon,
+  WeaponMaterial as DBWeaponMaterial
+} from '@prisma/client'
+
+import { extractWeaponMaterial, WeaponMaterialSchema } from './weaponMaterial'
+
+export const WeaponSchema = z.object({
   id: z.number().int(),
   nameKey: z.string(),
-  material: z.string(),
+  material: WeaponMaterialSchema,
   range: z.number(),
   slashDamage: z.number(),
   bluntDamage: z.number(),
@@ -13,15 +19,21 @@ export const WeaponCodec = z.object({
   thunderDamage: z.number(),
   darkDamage: z.number(),
   arcaneDamage: z.number(),
-})
+}).transform(weapon => ({
+  ...weapon,
+  __brand: 'weapon' as const,
+}))
 
-export type Weapon = z.TypeOf<typeof WeaponCodec>
+export type Weapon = z.TypeOf<typeof WeaponSchema>
 
-export const extractWeapon = (src: DBWeapon): Weapon => ({
+export const extractWeapon = (src: DBWeapon & {
+  material: DBWeaponMaterial,
+}): Weapon => ({
+  __brand: 'weapon',
   id: src.id,
   nameKey: src.nameKey,
   range: src.range,
-  material: src.material,
+  material: extractWeaponMaterial(src.material),
   slashDamage: src.slashDamage,
   bluntDamage: src.bluntDamage,
   pierceDamage: src.pierceDamage,

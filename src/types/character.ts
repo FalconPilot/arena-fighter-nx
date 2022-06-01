@@ -2,36 +2,38 @@ import { z } from 'zod'
 import {
   Character as DBCharacter,
   Weapon as DBWeapon,
+  WeaponMaterial as DBWeaponMaterial,
 } from '@prisma/client'
-import { WeaponCodec } from './weapon'
 
-export const CharacterCodec = z.object({
+import { extractWeapon, WeaponSchema } from './weapon'
+
+export const CharacterSchema = z.object({
   id: z.number().int(),
   firstName: z.string(),
   lastName: z.string(),
   stageName: z.nullable(z.string()),
-  weapon: z.nullable(WeaponCodec),
-  secondaryWeapon: z.nullable(WeaponCodec),
+  weapon: z.nullable(WeaponSchema),
+  secondaryWeapon: z.nullable(WeaponSchema),
 })
 
-export type Character = z.TypeOf<typeof CharacterCodec>
+export type Character = z.TypeOf<typeof CharacterSchema>
 
 export const extractCharacter = (src: DBCharacter & {
-  weapon: DBWeapon | null,
-  secondaryWeapon: DBWeapon | null,
+  weapon: DBWeapon & { material: DBWeaponMaterial } | null,
+  secondaryWeapon: DBWeapon & { material: DBWeaponMaterial } | null,
 }): Character => ({
   id: src.id,
   firstName: src.firstName,
   lastName: src.lastName,
   stageName: src.stageName,
-  weapon: src.weapon,
-  secondaryWeapon: src.secondaryWeapon,
+  weapon: src.weapon && extractWeapon(src.weapon),
+  secondaryWeapon: src.secondaryWeapon && extractWeapon(src.secondaryWeapon),
 })
 
-export const CharacterPayloadCodec = z.object({
+export const CharacterPayloadSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   stageName: z.nullable(z.string()),
 })
 
-export type CharacterPayload = z.TypeOf<typeof CharacterPayloadCodec>
+export type CharacterPayload = z.TypeOf<typeof CharacterPayloadSchema>

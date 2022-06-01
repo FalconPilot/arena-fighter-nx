@@ -96,6 +96,14 @@ enum WeaponMaterialType {
   Stone
 }
 
+model WeaponMaterial {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  nameKey String
+  materialType WeaponMaterialType
+  weapons Weapon[]
+}
+
 model Weapon {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -104,7 +112,8 @@ model Weapon {
   charactersWithSecondary Character[] @relation(name: "secondaryWeapon")
   category WeaponType
   size WeaponSize
-  material WeaponMaterialType
+  material WeaponMaterial @relation(fields: [materialId], references: [id])
+  materialId Int
   range Int
 
   // Damages

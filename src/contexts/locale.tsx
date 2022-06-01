@@ -3,16 +3,23 @@ import * as React from 'react'
 import useCookie from 'react-use-cookie'
 
 import { translations } from 'gamedata/locales'
-import { isLocale, Locale } from 'types'
+import { isLocale, Locale, Translation } from 'types'
+import { noOp } from 'utils/function'
 
 type LocaleContextData = [
-  (key: keyof typeof translations) => string,
+  {
+    t: (key: keyof typeof translations) => string,
+    dt: (key: string) => string,
+  },
   (lang: Locale) => void,
 ]
 
 const LocaleContext = React.createContext<LocaleContextData>([
-  (_) => '',
-  () => {},
+  {
+    t: () => '',
+    dt: () => '',
+  },
+  noOp,
 ])
 LocaleContext.displayName = 'UserContext'
 
@@ -39,12 +46,19 @@ export const LocaleProvider: React.FC<{
     translations[key][locale]
   ), [locale])
 
+  const getDynamicTranslation = React.useCallback((key: string): string => (
+    (translations as Record<string, Translation>)?.[key]?.[locale] ?? key
+  ), [locale])
+
   const switchLanguage = React.useCallback((lang: Locale): void => {
     setLocaleCookie(lang)
   }, [setLocaleCookie])
 
   return (
-    <LocaleContext.Provider value={[getTranslation, switchLanguage]}>
+    <LocaleContext.Provider value={[{
+      t: getTranslation,
+      dt: getDynamicTranslation,
+    }, switchLanguage]}>
       {children}
     </LocaleContext.Provider>
   )

@@ -14,10 +14,12 @@ const spin = keyframes({
 const Spinner = styled('div', {
   width: '50px',
   height: '50px',
-  borderWidth: '1px',
+  flex: '0 0',
+  margin: 'auto',
+  borderWidth: '2px',
   borderStyle: 'solid',
   borderColor: 'transparent',
-  borderTopColor: '#333',
+  borderTopColor: '#f33',
   borderRadius: '50%',
   animation: `${spin} ease-in-out 1s infinite`,
 })

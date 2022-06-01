@@ -42,7 +42,7 @@ export const CharactersListView: React.FC<{
   onSubmit,
   selectCharacter,
 }) => {
-  const [t] = useTranslations()
+  const [{ t }] = useTranslations()
 
   const onInputChange = React.useCallback(
     (onChange: (v: string) => void) => (evt: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,15 +1,15 @@
 import { z } from 'zod'
 import { User as DBUser } from '@prisma/client'
 
-export const UserCodec = z.object({
+export const UserSchema = z.object({
   id: z.number().int(),
   name: z.string(),
   email: z.string().email(),
 })
 
-export type User = z.TypeOf<typeof UserCodec>
+export type User = z.TypeOf<typeof UserSchema>
 
-export const UserPayloadCodec = z.object({
+export const UserPayloadSchema = z.object({
   name: z.string(),
   email: z.string().email(),
   password: z.string().min(8),
@@ -18,7 +18,7 @@ export const UserPayloadCodec = z.object({
   .refine(user => user.password === user.passwordCheck)
   .transform(({ passwordCheck, ...user }) => ({ ...user }))
 
-export type UserPayload = z.TypeOf<typeof UserPayloadCodec>
+export type UserPayload = z.TypeOf<typeof UserPayloadSchema>
 
 export const extractUser = (src: DBUser): User => ({
   id: src.id,
@@ -26,9 +26,9 @@ export const extractUser = (src: DBUser): User => ({
   email: src.email,
 })
 
-export const LoginPayloadCodec = z.object({
+export const LoginPayloadSchema = z.object({
   email: z.string().email(),
   password: z.string(),
 })
 
-export type LoginPayload = z.TypeOf<typeof LoginPayloadCodec>
+export type LoginPayload = z.TypeOf<typeof LoginPayloadSchema>

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const SerializedAPIErrorCodec = z.object({
+export const SerializedAPIErrorSchema = z.object({
   httpStatus: z.number(),
   message: z.string(),
   details: z.optional(z.object({
@@ -8,7 +8,7 @@ export const SerializedAPIErrorCodec = z.object({
   }))
 })
 
-export type SerializedAPIError = z.TypeOf<typeof SerializedAPIErrorCodec>
+export type SerializedAPIError = z.TypeOf<typeof SerializedAPIErrorSchema>
 
 export type APIErrorDetails = SerializedAPIError['details']
 

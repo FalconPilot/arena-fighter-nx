@@ -9,7 +9,7 @@ export const SignupView: React.FunctionComponent<CommonProps & {
   form: SignupForm,
   onSubmit: React.FormEventHandler<HTMLFormElement>
 }> = ({ form, onSubmit, switchForm }) => {
-  const [t] = useTranslations()
+  const [{ t }] = useTranslations()
 
   const onInputChange = React.useCallback(
     (onChange: (v: string) => void) => (evt: React.ChangeEvent<HTMLInputElement>) => {

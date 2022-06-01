@@ -8,7 +8,7 @@ import { noOp } from 'utils/function'
 
 import {
   Character,
-  CharacterCodec,
+  CharacterSchema,
   CharacterPayload,
   hasResult,
   LoadingState
@@ -55,7 +55,7 @@ export const CharactersProvider: React.FC<{
   const loadCharacters = React.useCallback(() => {
     charactersFunctions.startLoading()
 
-    API.get('/api/users/characters', z.array(CharacterCodec))
+    API.get('/api/users/characters', z.array(CharacterSchema))
       .execute()
       .then(charactersFunctions.finishLoading)
       .catch(charactersFunctions.handleError)
@@ -81,7 +81,7 @@ export const CharactersProvider: React.FC<{
   ) => {
     charactersFunctions.startLoading()
 
-    API.put(`/api/characters/${id}`, CharacterCodec)
+    API.put(`/api/characters/${id}`, CharacterSchema)
       .withBody(payload)
       .execute()
       .then(character => {

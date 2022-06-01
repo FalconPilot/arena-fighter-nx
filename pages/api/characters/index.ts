@@ -7,13 +7,13 @@ import {
   APIError,
   APIHandler,
   Character,
-  CharacterPayloadCodec,
+  CharacterPayloadSchema,
   extractCharacter
 } from 'types'
 
 const handlePost: APIHandler<Character> = async (req, res) => {
   return getSessionUser(req)
-    .then(user => [user, CharacterPayloadCodec.parse(req.body)] as const)
+    .then(user => [user, CharacterPayloadSchema.parse(req.body)] as const)
     .then(([user, payload]) =>
       prisma.character.findMany({
         where: {
@@ -32,8 +32,12 @@ const handlePost: APIHandler<Character> = async (req, res) => {
             userId: user.id,
           },
           include: {
-            weapon: true,
-            secondaryWeapon: true,
+            weapon: {
+              include: { material: true },
+            },
+            secondaryWeapon: {
+              include: { material: true },
+            },
           }
         }))
     )

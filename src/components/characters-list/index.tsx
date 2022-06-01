@@ -4,14 +4,14 @@ import { useForm } from 'react-ux-form'
 
 import { useCharacters, useTranslations } from 'contexts'
 import { Loading } from 'components/loading'
-import { CharacterCodec } from 'types'
+import { CharacterSchema } from 'types'
 import { API } from 'utils/api'
 
 import { CharactersListView } from './view'
 import { CharacterForm } from './types'
 
 export const CharactersList: React.FC = () => {
-  const [t] = useTranslations()
+  const [{ t }] = useTranslations()
   const [{ characters }, {
     loadCharacters,
     selectCharacter,
@@ -50,7 +50,7 @@ export const CharactersList: React.FC = () => {
   const createCharacter: React.FormEventHandler<HTMLFormElement> = React.useCallback(evt => {
     evt.preventDefault()
     form.submitForm(values => {
-      API.post('/api/characters', CharacterCodec)
+      API.post('/api/characters', CharacterSchema)
         .withBody(values)
         .execute()
         .then(closeOverlay)

@@ -1,5 +1,5 @@
 import { prisma } from 'prisma'
-import { APIError, APIHandler, Character, CharacterPayloadCodec, extractCharacter } from 'types'
+import { APIError, APIHandler, Character, CharacterPayloadSchema, extractCharacter } from 'types'
 import { errorHandler, forbiddenMethod } from 'utils/errors'
 import { queryId } from 'utils/query'
 import { getSessionUser, withSessionRoute } from 'utils/session'
@@ -9,7 +9,7 @@ const handlePut: APIHandler<Character> = async (req, res) => {
   return getSessionUser(req)
     .then(user => [
       user,
-      CharacterPayloadCodec.parse(req.body)
+      CharacterPayloadSchema.parse(req.body)
     ] as const)
     .then(([user, payload]) =>
       Promise.resolve(queryId(req.query.id))
@@ -29,8 +29,12 @@ const handlePut: APIHandler<Character> = async (req, res) => {
           where: { id: char.id },
           data: payload,
           include: {
-            weapon: true,
-            secondaryWeapon: true,
+            weapon: {
+              include: { material: true },
+            },
+            secondaryWeapon: {
+              include: { material: true },
+            },
           }
         }))
     )

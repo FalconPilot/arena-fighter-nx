@@ -8,8 +8,12 @@ const handleGet: APIHandler<Character[]> = async (req, res) => {
     .then(user => prisma.character.findMany({
       where: { userId: user.id },
       include: {
-        weapon: true,
-        secondaryWeapon: true,
+        weapon: {
+          include: { material: true },
+        },
+        secondaryWeapon: {
+          include: { material: true },
+        },
       }
     }))
     .then(results => results.map(extractCharacter))

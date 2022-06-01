@@ -4,7 +4,7 @@ import { useForm } from 'react-ux-form'
 
 import { useUser } from 'contexts'
 import { API } from 'utils/api'
-import { UserCodec } from 'types'
+import { UserSchema } from 'types'
 
 import { CommonProps, CurrentForm, LoginForm, SignupForm } from './types'
 
@@ -37,7 +37,7 @@ export const Auth: React.FunctionComponent = () => {
     evt.preventDefault()
     loginForm.submitForm(values => {
       if (values.email) {
-        API.post(`/api/users/login`, UserCodec)
+        API.post(`/api/users/login`, UserSchema)
           .withBody(values)
           .execute()
           .then(loadUser)
@@ -65,7 +65,7 @@ export const Auth: React.FunctionComponent = () => {
   const submitSignupForm: React.FormEventHandler<HTMLFormElement> = React.useCallback(evt => {
     evt.preventDefault()
     signupForm.submitForm(values => {
-      API.post('/api/users', UserCodec)
+      API.post('/api/users', UserSchema)
         .withBody(values)
         .execute()
         .then(loadUser)

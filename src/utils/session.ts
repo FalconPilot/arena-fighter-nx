@@ -1,8 +1,9 @@
+import getConfig from 'next/config'
+import { NextApiRequest } from 'next'
 import { withIronSessionApiRoute } from 'iron-session/next'
-import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 
 import { prisma } from 'prisma'
-import { APIError, User } from 'types'
+import { APIError, APIHandler, User } from 'types'
 
 declare module 'iron-session' {
   interface IronSessionData {
@@ -12,23 +13,21 @@ declare module 'iron-session' {
   }
 }
 
-if (!process.env.SESSION_PWD) {
-  throw new Error('SESSION_PWD is not defined in environment')
-}
+const { serverRuntimeConfig, publicRuntimeConfig } = getConfig()
 
 const sessionOptions = {
-  password: process.env.SESSION_PWD,
+  password: serverRuntimeConfig.sessionPassword,
   cookieName: 'arenanx_session',
   cookieOptions: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: publicRuntimeConfig.NODE_ENV === 'production',
   },
 }
 
-export const withSessionRoute = <T>(handler: NextApiHandler<T>) => {
+export const withSessionRoute = <T>(handler: APIHandler<T>) => {
   return withIronSessionApiRoute(handler, sessionOptions)
 }
 
-export const getSessionUser = async <T>(
+export const getSessionUser = async (
   req: NextApiRequest,
 ): Promise<User> => {
   const userId = req.session.user?.id
